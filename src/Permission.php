@@ -10,6 +10,7 @@ use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Nova;
 use Laravel\Nova\Resource;
 use Spatie\Permission\PermissionRegistrar;
@@ -78,10 +79,10 @@ class Permission extends Resource
     /**
      * Get the fields displayed by the resource.
      *
-     * @param  Request  $request
+     * @param  NovaRequest  $request
      * @return array
      */
-    public function fields(Request $request): array
+    public function fields(NovaRequest $request): array
     {
         $guardOptions = collect(config('auth.guards'))->mapWithKeys(function ($value, $key) {
             return [$key => $key];
