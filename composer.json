@@ -1,5 +1,5 @@
 {
-    "name": "vyuldashev/nova-permission",
+    "name": "navidsafavi/nova-permission",
     "description": "A Laravel Nova tool for Spatie's Permission library.",
     "keywords": [
         "laravel",

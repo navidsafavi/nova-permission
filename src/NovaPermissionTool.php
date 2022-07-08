@@ -3,15 +3,19 @@
 namespace Vyuldashev\NovaPermission;
 
 use Gate;
-use Laravel\Nova\Nova;
+use Illuminate\Http\Request;
+use Laravel\Nova\Menu\MenuItem;
+use Laravel\Nova\Menu\MenuSection;
 use Laravel\Nova\Tool;
 
 class NovaPermissionTool extends Tool
 {
     public string $roleResource = Role::class;
+
     public string $permissionResource = Permission::class;
 
     public string $rolePolicy = RolePolicy::class;
+
     public string $permissionPolicy = PermissionPolicy::class;
 
     /**
@@ -21,11 +25,6 @@ class NovaPermissionTool extends Tool
      */
     public function boot()
     {
-        Nova::resources([
-            $this->roleResource,
-            $this->permissionResource,
-        ]);
-
         Gate::policy(config('permission.models.permission'), $this->permissionPolicy);
         Gate::policy(config('permission.models.role'), $this->rolePolicy);
     }
@@ -56,5 +55,23 @@ class NovaPermissionTool extends Tool
         $this->permissionPolicy = $permissionPolicy;
 
         return $this;
+    }
+
+    /**
+     * Build the menu that renders the navigation links for the tool.
+     *
+     * @param  Request  $request
+     * @return mixed
+     */
+    public function menu(Request $request)
+    {
+        return [
+
+            MenuSection::make(__('nova-permission-tool::navigation.sidebar-label'), [
+                MenuItem::resource($this->roleResource),
+                MenuItem::resource($this->permissionResource),
+            ])->icon('key')->collapsable(),
+
+        ];
     }
 }

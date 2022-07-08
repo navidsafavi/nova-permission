@@ -3,15 +3,23 @@
 namespace Vyuldashev\NovaPermission;
 
 use Illuminate\Support\Collection;
-use Laravel\Nova\Fields\BooleanGroup;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Spatie\Permission\Models\Permission as PermissionModel;
 use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Traits\HasPermissions;
 
-class PermissionBooleanGroup extends BooleanGroup
+class PermissionBooleanGroup extends BaseBooleanGroup
 {
-    public function __construct($name, $attribute = null, callable $resolveCallback = null, $labelAttribute = null)
+    protected null|string $titleKey = null;
+
+    /**
+     * Create a new field.
+     *
+     * @param  string  $name
+     * @param  null  $attribute
+     * @param  callable|null  $resolveCallback
+     */
+    public function __construct($name, $attribute = null, callable $resolveCallback = null)
     {
         parent::__construct(
             $name,
@@ -23,18 +31,17 @@ class PermissionBooleanGroup extends BooleanGroup
             }
         );
 
-        $permissionClass = app(PermissionRegistrar::class)->getPermissionClass();
+        $this->classModel = app(PermissionRegistrar::class)->getPermissionClass();
 
-        $options = $permissionClass::get()->pluck($labelAttribute ?? 'name', 'name')->toArray();
-
+        $options = $this->classModel::get()->pluck('name', 'name')->toArray();
         $this->options($options);
     }
 
     /**
-     * @param NovaRequest $request
-     * @param string $requestAttribute
-     * @param HasPermissions $model
-     * @param string $attribute
+     * @param  NovaRequest  $request
+     * @param  string  $requestAttribute
+     * @param  HasPermissions  $model
+     * @param  string  $attribute
      */
     protected function fillAttributeFromRequest(NovaRequest $request, $requestAttribute, $model, $attribute)
     {
